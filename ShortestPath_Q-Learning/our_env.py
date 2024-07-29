@@ -5,7 +5,6 @@ from our_agent import QAgent
 
 import gym
 from gym import error
-from gym.utils import closer
 import networkx as nx
 
 import copy

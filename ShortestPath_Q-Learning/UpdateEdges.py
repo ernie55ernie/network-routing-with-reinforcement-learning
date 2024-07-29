@@ -8,7 +8,7 @@ import math
 def Delete(dyNetwork, min_edge_removal, max_edge_removal):
     edges = dyNetwork._network.edges()
     deletion_number = random.randint(min_edge_removal, min(max_edge_removal, len(edges) - 1))
-    strip = random.sample(edges, k=deletion_number)
+    strip = random.sample(list(edges), k=deletion_number)
     temp = []
     for s_edge, e_edge in strip:
         temp.append((s_edge,e_edge,dyNetwork._network[s_edge][e_edge]))
