@@ -12,7 +12,6 @@ main_dir = main_dir + '/'
 with open(main_dir + 'Setting.json') as f:
     setting = json.load(f)
 
-
     ''' 
     This class contains the policy and target neural network for a certain destination node deep Q-learning.
     node_number: this is the ID associated with each network, since each neural network is associated with some destination node 
@@ -24,7 +23,7 @@ with open(main_dir + 'Setting.json') as f:
 class NeuralNetwork(object):
 
     def __init__(self, node_number, network_size, num_extra, capacity=setting['DQN']['memory_bank_size']):
-        self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        self.device = setting['DQN']['device'] # torch.device('cuda:1' if torch.cuda.is_available() else 'cpu')
         learning_rate = setting['DQN']['optimizer_learning_rate']
         self.ID = node_number
         self.policy_net = DQN(network_size, num_extra).to(self.device)

@@ -6,7 +6,6 @@ import copy
 import dynetwork
 import gym
 from gym import error
-from gym.utils import closer
 import numpy as np
 import networkx as nx
 import math
@@ -368,7 +367,7 @@ class dynetworkEnv(gym.Env):
             size = torch.tensor([5]).unsqueeze(0)
             state = torch.cat((state, size), dim=1)
 
-        past_reward = self.dqn[1].policy_net(state.float())
+        past_reward = self.dqn[1].policy_net(state.float().to(setting['DQN']['device']))
 
         return past_reward
 

@@ -64,8 +64,7 @@ class QAgent(object):
             "entered": 0,
         }
         self.adjacency = dynetwork.adjacency_matrix
-        self.device = torch.device(
-            "cuda" if torch.cuda.is_available() else "cpu")
+        self.device = torch.device(setting['DQN']['device'])
 
     """
 
@@ -96,7 +95,7 @@ class QAgent(object):
                 ''' obtains the next best neighbor to move the packet from its current node by referencing our neural network '''
                 with torch.no_grad():
                     qvals = neural_network.policy_net(
-                        state.float())
+                        state.float().to(self.device))
                     next_step_idx = qvals[:, neighbor].argmax().item()
                     next_step = neighbor[next_step_idx]
                     if self.config['update_epsilon']:
@@ -145,7 +144,7 @@ class QAgent(object):
                     nn.target_net, next_states, actions, nn.ID)
 
                 target_q_values = (
-                    next_q_values * self.config['gamma']) + rewards
+                    next_q_values * self.config['gamma']) + rewards.to(self.device)
 
                 '''update priority memory's probability'''
                 if self.config['priority_memory']:
@@ -173,7 +172,7 @@ class QAgent(object):
     ''' helper function to obtain the Q-val of current state'''
 
     def get_current_QVal(self, policy_net, states, actions):
-        return policy_net(states.float()).gather(dim=1, index=actions.unsqueeze(-1))
+        return policy_net(states.float().to(self.device)).gather(dim=1, index=actions.unsqueeze(-1).to(self.device))
 
     ''' helper function to obtain the Q-val of the next state'''
 
@@ -181,7 +180,7 @@ class QAgent(object):
         ''' need to apply neighbors mask to target_net() prior to taking the maximum '''
         non_terminal_idx = (actions != destination)
 
-        temp1 = target_net(next_states.float())
+        temp1 = target_net(next_states.float().to(self.device))
 
         ''' initialize zero value vectors '''
         batch_size = next_states.shape[0]
@@ -193,6 +192,7 @@ class QAgent(object):
                 adjs = self.adjacency[actions[idx]][0]
                 adjs = (adjs == 1)
                 temp2 = temp1[idx, :].view(1, -1)
-                values[0, idx] = torch.max(temp2[adjs]).detach()
+                if adjs < len(temp2):
+                    values[0, idx] = torch.max(temp2[adjs]).detach()
 
         return values

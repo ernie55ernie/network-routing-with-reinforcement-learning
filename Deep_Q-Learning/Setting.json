@@ -17,7 +17,8 @@
 		"memory_batch_size": 16,
 		"memory_bank_size": 1000,
 		"optimizer_learning_rate": 0.005,
-		"optimize_per_episode": 1
+		"optimize_per_episode": 1,
+		"device": "cuda"
 	},
 	"AGENT": {
 		"epsilon": 0.7,

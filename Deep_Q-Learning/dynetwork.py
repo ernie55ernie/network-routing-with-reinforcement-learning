@@ -24,7 +24,7 @@ class DynamicNetwork(object):
     def __init__(self, network, max_initializations=0, packets=None, rejections=0, deliveries=0,):
 
         self._network = copy.deepcopy(network)
-        self.adjacency_matrix = nx.to_numpy_matrix(
+        self.adjacency_matrix = nx.to_numpy_array(
             self._network, nodelist=sorted(list(self._network.nodes())))
         self._max_initializations = max_initializations
         self._packets = packets
